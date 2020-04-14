@@ -40,9 +40,9 @@ class YouTube {
 		$parser->setHook( 'youtube', [ __CLASS__, 'embedYouTube' ] );
 		$parser->setHook( 'aovideo', [ __CLASS__, 'embedArchiveOrgVideo' ] );
 		$parser->setHook( 'aoaudio', [ __CLASS__, 'embedArchiveOrgAudio' ] );
+		$parser->setHook( 'bitchute', [ __CLASS__, 'embedBitChute' ] );
 		$parser->setHook( 'wegame', [ __CLASS__, 'embedWeGame' ] );
 		$parser->setHook( 'tangler', [ __CLASS__, 'embedTangler' ] );
-		$parser->setHook( 'gtrailer', [ __CLASS__, 'embedGametrailers' ] );
 		$parser->setHook( 'nicovideo', [ __CLASS__, 'embedNicovideo' ] );
 	}
 
@@ -320,54 +320,6 @@ class YouTube {
 		}
 	}
 
-	public static function url2gtid( $url ) {
-		$id = $url;
-
-		if ( preg_match( '/^http:\/\/www\.gametrailers\.com\/player\/(.+)\.html$/', $url, $preg ) ) {
-			$id = $preg[1];
-		} elseif ( preg_match( '/^http:\/\/www\.gametrailers\.com\/remote_wrap\.php\?mid=(.+)$/', $url, $preg ) ) {
-			$id = $preg[1];
-		}
-
-		preg_match( '/([0-9]+)/', $id, $preg );
-		$id = $preg[1];
-
-		return $id;
-	}
-
-	public static function embedGametrailers( $input, $argv, $parser ) {
-		$gtid   = '';
-		$width  = $width_max  = 480;
-		$height = $height_max = 392;
-
-		if ( !empty( $argv['gtid'] ) ) {
-			$gtid = self::url2gtid( $argv['gtid'] );
-		} elseif ( !empty( $input ) ) {
-			$gtid = self::url2gtid( $input );
-		}
-		if (
-			!empty( $argv['width'] ) &&
-			settype( $argv['width'], 'integer' ) &&
-			( $width_max >= $argv['width'] )
-		) {
-			$width = $argv['width'];
-		}
-		if (
-			!empty( $argv['height'] ) &&
-			settype( $argv['height'], 'integer' ) &&
-			( $height_max >= $argv['height'] )
-		) {
-			$height = $argv['height'];
-		}
-
-		if ( !empty( $gtid ) ) {
-			$url = "http://www.gametrailers.com/remote_wrap.php?mid={$gtid}";
-			// return "<object type=\"application/x-shockwave-flash\" width=\"{$width}\" height=\"{$height}\"><param name=\"movie\" value=\"{$url}\"/></object>";
-			// gametrailers' flash doesn't work on FF with object tag alone )-: weird, yt and gvideo are ok )-: valid xhtml no more )-:
-			return "<object classid=\"clsid:d27cdb6e-ae6d-11cf-96b8-444553540000\"  codebase=\"http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0\" id=\"gtembed\" width=\"{$width}\" height=\"{$height}\">	<param name=\"allowScriptAccess\" value=\"sameDomain\" /> 	<param name=\"allowFullScreen\" value=\"true\" /> <param name=\"movie\" value=\"{$url}\"/> <param name=\"quality\" value=\"high\" /> <embed src=\"{$url}\" swLiveConnect=\"true\" name=\"gtembed\" align=\"middle\" allowScriptAccess=\"sameDomain\" allowFullScreen=\"true\" quality=\"high\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\" type=\"application/x-shockwave-flash\" width=\"{$width}\" height=\"{$height}\"></embed> </object>";
-		}
-	}
-
 	public static function url2nvid( $url ) {
 		$id = $url;
 
@@ -406,4 +358,41 @@ class YouTube {
 		}
 	}
 
+	public static function url2bcid( $url ) {
+		$id = $url;
+
+		preg_match( '/([a-zA-Z0-9]{1,64})/', $id, $preg );
+		$id = $preg[1];
+
+		return $id;
+	}
+
+	public static function embedBitChute( $input, $argv, $parser ) {
+		$bcid = '';
+		$width  = 400;
+		$height = 225;
+
+		if ( !empty( $argv['bcid'] ) ) {
+			$bcid = self::url2bcid( $argv['bcid'] );
+		} elseif ( !empty( $input ) ) {
+			$bcid = self::url2bcid( $input );
+		}
+		if (
+			!empty( $argv['width'] ) &&
+			settype( $argv['width'], 'integer' )
+		) {
+			$width = $argv['width'];
+		}
+		if (
+			!empty( $argv['height'] ) &&
+			settype( $argv['height'], 'integer' )
+		) {
+			$height = $argv['height'];
+		}
+
+		if ( !empty( $bcid ) ) {
+			$url = "https://www.bitchute.com/embed/{$bcid}";
+			return "<iframe width=\"{$width}\" height=\"{$height}\" src=\"{$url}\"></iframe>";
+		}
+	}
 }
