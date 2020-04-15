@@ -1,11 +1,11 @@
 {
-	"name": "YouTube",
-	"version": "1.9.3a",
+	"name": "NewYouTube",
+	"version": "1.9.4",
 	"author": [
 		"Przemek Piotrowski",
 		"[https://github.com/computernewb Dartz]"
 	],
-	"url": "https://github.com/computernewb/mediawiki-extensions-YouTube",
+	"url": "https://github.com/computernewb/NewYouTube",
 	"descriptionmsg": "youtube-desc",
 	"license-name": "GPL-2.0-or-later",
 	"type": "parserhook",
