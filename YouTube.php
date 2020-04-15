@@ -41,6 +41,7 @@ class YouTube {
 		$parser->setHook( 'aovideo', [ __CLASS__, 'embedArchiveOrgVideo' ] );
 		$parser->setHook( 'aoaudio', [ __CLASS__, 'embedArchiveOrgAudio' ] );
 		$parser->setHook( 'bitchute', [ __CLASS__, 'embedBitChute' ] );
+		$parser->setHook( 'bitview', [ __CLASS__, 'embedBitView' ] );
 		$parser->setHook( 'nicovideo', [ __CLASS__, 'embedNicovideo' ] );
 	}
 
@@ -321,6 +322,85 @@ class YouTube {
 		if ( !empty( $bcid ) ) {
 			$url = "https://bitchute.com/embed/{$bcid}";
 			return "<iframe width=\"{$width}\" height=\"{$height}\" src=\"{$url}\"></iframe>";
+		}
+	}
+
+	public static function url2bvid( $url ) {
+		$id = $url;
+
+		preg_match( '/([0-9A-Za-z_-]+)/', $url, $preg );
+		$id = $preg[1];
+
+		return $id;
+	}
+	
+	public static function embedBitView( $input, $argv, $parser ) {
+		$bvid = '';
+		$width = 425;
+		$height = 355;
+		
+		if ( $bvid === false ) {
+			return '';
+		}
+
+		if ( !empty( $argv['bvid'] ) ) {
+			$bvid = self::url2bvid( $argv['bvid'] );
+		} elseif ( !empty( $input ) ) {
+			$bvid = self::url2bvid( $input );
+		}
+		if (
+			!empty( $argv['width'] ) &&
+			settype( $argv['width'], 'integer' )
+		) {
+			$width = $argv['width'];
+		}
+		if (
+			!empty( $argv['height'] ) &&
+			settype( $argv['height'], 'integer' )
+		) {
+			$height = $argv['height'];
+		}
+		
+		// BitView can embed in both Flash and HTML5, so we will let the user decide what to embed
+		
+		if ( !empty( $argv['type'] ) && strtolower( $argv['type'] ) == 'flash' ) {
+			$width = 450; // the flash player is restricted to this width & height no matter what.
+			$height = 370;
+			
+			$urlBase = '//www.bitview.net/embed.php?v=';
+			
+			if ( !empty( $bvid ) ) {
+				$url = $urlBase . $bvid;
+				return "<object type=\"application/x-shockwave-flash\" data=\"{$url}\" width=\"{$width}\" height=\"{$height}\"><param name=\"movie\" value=\"{$url}\"/><param name=\"wmode\" value=\"transparent\"/></object>";
+			}
+		} else {
+			// Embed in HTML5 
+			$width = 450;
+			$height = 370;
+			$maxWidth = 960;
+			$maxHeight = 720;
+			
+			if (
+				!empty( $argv['width'] ) &&
+				filter_var( $argv['width'], FILTER_VALIDATE_INT, [ 'options' => [ 'min_range' => 0 ] ] ) &&
+				$argv['width'] <= $maxWidth
+			) {
+				$width = $argv['width'];
+			}
+			if (
+				!empty( $argv['height'] ) &&
+				filter_var( $argv['height'], FILTER_VALIDATE_INT, [ 'options' => [ 'min_range' => 0 ] ] ) &&
+				$argv['height'] <= $maxHeight
+			) {
+				$height = $argv['height'];
+			}
+			
+			$urlBase = '//www.bitview.net/embed.php?v=';
+			
+			if ( !empty( $bvid ) ) {
+				$url = $urlBase . $bvid. '&wt=0';
+				return "<iframe width=\"{$width}\" height=\"{$height}\" src=\"{$url}\" frameborder=\"0\" allowfullscreen></iframe>";
+			}
 		}
 	}
 }
