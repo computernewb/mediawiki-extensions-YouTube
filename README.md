@@ -1,4 +1,4 @@
-# YouTube
+# NewYouTube
 A fork of the YouTube MediaWiki Extension that adds support for more video websites, and deprecates some no longer functioning websites.
 
 Adds support for the following websites:
@@ -16,5 +16,5 @@ Removes support for:
 Clone this repo to your extensions folder, then add this to your LocalSettings.php:
 
 ```php 
-wfLoadExtension( 'YouTube' ); 
+wfLoadExtension( 'NewYouTube' ); 
 ```
