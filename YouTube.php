@@ -285,7 +285,7 @@ class YouTube {
 	public static function url2bcid( $url ) {
 		$id = $url;
 
-		preg_match( '/([a-zA-Z0-9]{1,64})/', $id, $preg );
+		preg_match( '/([a-zA-Z0-9._-]{1,64})/', $id, $preg );
 		$id = $preg[1];
 
 		return $id;
@@ -319,7 +319,7 @@ class YouTube {
 		}
 
 		if ( !empty( $bcid ) ) {
-			$url = "https://www.bitchute.com/embed/{$bcid}";
+			$url = "https://bitchute.com/embed/{$bcid}";
 			return "<iframe width=\"{$width}\" height=\"{$height}\" src=\"{$url}\"></iframe>";
 		}
 	}
