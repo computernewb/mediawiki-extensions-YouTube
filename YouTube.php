@@ -295,6 +295,10 @@ class YouTube {
 		$bcid = '';
 		$width  = 400;
 		$height = 225;
+		
+		if ( $bcid === false ) {
+			return '';
+		}
 
 		if ( !empty( $argv['bcid'] ) ) {
 			$bcid = self::url2bcid( $argv['bcid'] );
