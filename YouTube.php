@@ -42,7 +42,6 @@ class YouTube {
 		$parser->setHook( 'aoaudio', [ __CLASS__, 'embedArchiveOrgAudio' ] );
 		$parser->setHook( 'bitchute', [ __CLASS__, 'embedBitChute' ] );
 		$parser->setHook( 'wegame', [ __CLASS__, 'embedWeGame' ] );
-		$parser->setHook( 'tangler', [ __CLASS__, 'embedTangler' ] );
 		$parser->setHook( 'nicovideo', [ __CLASS__, 'embedNicovideo' ] );
 	}
 
@@ -304,29 +303,6 @@ class YouTube {
 		}
 
 		return [ $tid, $gid ];
-	}
-
-	public static function embedTangler( $input, $argv, $parser ) {
-		$tid = $gid = '';
-
-		if ( !empty( $argv['tid'] ) && !empty( $argv['gid'] ) ) {
-			list( $tid, $gid ) = self::url2tgid( "{$argv['tid']}|{$argv['gid']}" );
-		} elseif ( !empty( $input ) ) {
-			list( $tid, $gid ) = self::url2tgid( $input );
-		}
-
-		if ( !empty( $tid ) && !empty( $gid ) ) {
-			return "<p style=\"width: 410px; height: 480px\" id=\"tangler-embed-topic-{$tid}\"></p><script src=\"http://www.tangler.com/widget/embedtopic.js?id={$tid}&gId={$gid}\"></script>";
-		}
-	}
-
-	public static function url2nvid( $url ) {
-		$id = $url;
-
-		preg_match( '/([0-9A-Za-z]+)/', $id, $preg );
-		$id = $preg[1];
-
-		return $id;
 	}
 
 	public static function embedNicovideo( $input, $argv, $parser ) {
