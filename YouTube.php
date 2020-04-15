@@ -243,22 +243,14 @@ class YouTube {
 			return "<object type=\"application/x-shockwave-flash\" data=\"http://www.archive.org/audio/xspf_player.swf?playlist_url={$url}\" width=\"{$width}\" height=\"{$height}\"><param name=\"movie\" value=\"http://www.archive.org/audio/xspf_player.swf?playlist_url={$url}\"/></object>";
 		}
 	}
+	
+	public static function url2nvid( $url ) {
+		$id = $url;
 
-	public static function url2tgid( $input ) {
-		$tid = $gid = 0;
+		preg_match( '/([0-9A-Za-z]+)/', $id, $preg );
+		$id = $preg[1];
 
-		if ( preg_match( '/^id=([0-9]+)\|gId=([0-9]+)$/i', $input, $preg ) ) {
-			$tid = $preg[1];
-			$gid = $preg[2];
-		} elseif ( preg_match( '/^gId=([0-9]+)\|id=([0-9]+)$/i', $input, $preg ) ) {
-			$tid = $preg[2];
-			$gid = $preg[1];
-		} elseif ( preg_match( '/^([0-9]+)\|([0-9]+)$/', $input, $preg ) ) {
-			$tid = $preg[1];
-			$gid = $preg[2];
-		}
-
-		return [ $tid, $gid ];
+		return $id;
 	}
 
 	public static function embedNicovideo( $input, $argv, $parser ) {
