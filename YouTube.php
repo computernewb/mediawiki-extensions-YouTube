@@ -41,7 +41,6 @@ class YouTube {
 		$parser->setHook( 'aovideo', [ __CLASS__, 'embedArchiveOrgVideo' ] );
 		$parser->setHook( 'aoaudio', [ __CLASS__, 'embedArchiveOrgAudio' ] );
 		$parser->setHook( 'bitchute', [ __CLASS__, 'embedBitChute' ] );
-		$parser->setHook( 'wegame', [ __CLASS__, 'embedWeGame' ] );
 		$parser->setHook( 'nicovideo', [ __CLASS__, 'embedNicovideo' ] );
 	}
 
@@ -242,49 +241,6 @@ class YouTube {
 		if ( !empty( $aoaid ) ) {
 			$url = urlencode( "http://www.archive.org/audio/xspf-maker.php?identifier={$aoaid}" );
 			return "<object type=\"application/x-shockwave-flash\" data=\"http://www.archive.org/audio/xspf_player.swf?playlist_url={$url}\" width=\"{$width}\" height=\"{$height}\"><param name=\"movie\" value=\"http://www.archive.org/audio/xspf_player.swf?playlist_url={$url}\"/></object>";
-		}
-	}
-
-	public static function url2weid( $url ) {
-		$id = $url;
-
-		if ( preg_match( '/^http:\/\/www\.wegame\.com\/watch\/(.+)\/$/', $url, $preg ) ) {
-			$id = $preg[1];
-		}
-
-		preg_match( '/([0-9A-Za-z_-]+)/', $id, $preg );
-		$id = $preg[1];
-
-		return $id;
-	}
-
-	public static function embedWeGame( $input, $argv, $parser ) {
-		$weid   = '';
-		$width  = $width_max  = 488;
-		$height = $height_max = 387;
-
-		if ( !empty( $argv['weid'] ) ) {
-			$weid = self::url2weid( $argv['weid'] );
-		} elseif ( !empty( $input ) ) {
-			$weid = self::url2weid( $input );
-		}
-		if (
-			!empty( $argv['width'] ) &&
-			settype( $argv['width'], 'integer' ) &&
-			( $width_max >= $argv['width'] )
-		) {
-			$width = $argv['width'];
-		}
-		if (
-			!empty( $argv['height'] ) &&
-			settype( $argv['height'], 'integer' ) &&
-			( $height_max >= $argv['height'] )
-		) {
-			$height = $argv['height'];
-		}
-
-		if ( !empty( $weid ) ) {
-			return "<object type=\"application/x-shockwave-flash\" data=\"http://www.wegame.com/static/flash/player2.swf\" width=\"{$width}\" height=\"{$height}\"><param name=\"flashvars\" value=\"tag={$weid}\"/></object>";
 		}
 	}
 
