@@ -42,7 +42,9 @@ class YouTube {
 		$parser->setHook( 'aoaudio', [ __CLASS__, 'embedArchiveOrgAudio' ] );
 		$parser->setHook( 'bitchute', [ __CLASS__, 'embedBitChute' ] );
 		$parser->setHook( 'bitview', [ __CLASS__, 'embedBitView' ] );
+		$parser->setHook( 'dailymotion', [ __CLASS__, 'embedDailyMotion' ] );
 		$parser->setHook( 'nicovideo', [ __CLASS__, 'embedNicovideo' ] );
+                $parser->setHook( 'vidlii', [ __CLASS__, 'embedVidlii' ] );
 	}
 
 	/**
@@ -224,6 +226,49 @@ class YouTube {
 
 		return $id;
 	}
+	
+	
+	public static function url2dmid( $url ) {
+		$id = $url;
+
+		preg_match( '/([a-zA-Z0-9._-]{1,64})/', $id, $preg );
+		$id = $preg[1];
+
+		return $id;
+	}
+
+	public static function embedDailyMotion( $input, $argv, $parser ) {
+		$dmid = '';
+		$width  = 400;
+		$height = 170;
+		
+		if ( $dmid === false ) {
+			return '';
+		}
+
+		if ( !empty( $argv['dmid'] ) ) {
+			$dmid = self::url2dmid( $argv['dmid'] );
+		} elseif ( !empty( $input ) ) {
+			$dmid = self::url2dmid( $input );
+		}
+		if (
+			!empty( $argv['width'] ) &&
+			settype( $argv['width'], 'integer' )
+		) {
+			$width = $argv['width'];
+		}
+		if (
+			!empty( $argv['height'] ) &&
+			settype( $argv['height'], 'integer' )
+		) {
+			$height = $argv['height'];
+		}
+
+		if ( !empty( $dmid ) ) {
+			$url = "//www.dailymotion.com/embed/video/{$dmid}";
+			return "<iframe width=\"{$width}\" height=\"{$height}\" src=\"{$url}\"></iframe>";
+		}
+	}
 
 	public static function embedNicovideo( $input, $argv, $parser ) {
 		$nvid = '';
@@ -372,6 +417,48 @@ class YouTube {
 				$url = $urlBase . $bvid. '&wt=0';
 				return "<iframe width=\"{$width}\" height=\"{$height}\" src=\"{$url}\" frameborder=\"0\" allowfullscreen></iframe>";
 			}
+		}
+	}
+	
+	public static function url2vlid( $url ) {
+		$id = $url;
+
+		preg_match( '/([a-zA-Z0-9._-]{1,64})/', $id, $preg );
+		$id = $preg[1];
+
+		return $id;
+	}
+
+	public static function embedVidlii( $input, $argv, $parser ) {
+		$vlid = '';
+		$width  = 640;
+		$height = 480;
+		
+		if ( $vlid === false ) {
+			return '';
+		}
+
+		if ( !empty( $argv['vlid'] ) ) {
+			$vlid = self::url2vlid( $argv['vlid'] );
+		} elseif ( !empty( $input ) ) {
+			$vlid = self::url2vlid( $input );
+		}
+		if (
+			!empty( $argv['width'] ) &&
+			settype( $argv['width'], 'integer' )
+		) {
+			$width = $argv['width'];
+		}
+		if (
+			!empty( $argv['height'] ) &&
+			settype( $argv['height'], 'integer' )
+		) {
+			$height = $argv['height'];
+		}
+
+		if ( !empty( $vlid ) ) {
+			$url = "//www.vidlii.com/embed?v={$vlid}";
+			return "<iframe width=\"{$width}\" height=\"{$height}\" src=\"{$url}\"></iframe>";
 		}
 	}
 }
