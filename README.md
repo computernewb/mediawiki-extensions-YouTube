@@ -5,6 +5,12 @@ Adds support for the following websites:
 
 * BitChute
 * BitView
+* DailyMotion
+* Vidlii
+
+Keeps and updates support for:
+* YouTube
+* NicoVideo
 
 Removes support for:
 
@@ -18,3 +24,6 @@ Clone this repo to your extensions folder, then add this to your LocalSettings.p
 ```php 
 wfLoadExtension( 'NewYouTube' ); 
 ```
+
+# Requirements
+* At least MediaWiki 1.24
